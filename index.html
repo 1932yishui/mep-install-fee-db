@@ -9,6 +9,26 @@
   --bg:#f5f7fa; --card:#fff; --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb;
   --accent:#2563eb; --accent-soft:#eff6ff; --ok:#059669; --warn:#d97706; --bad:#dc2626;
 }
+/* 完整工作台入口条 */
+.wb-entry{background:linear-gradient(90deg,#eff6ff,#f0f9ff);border-bottom:1px solid #dbeafe}
+.wb-entry .inner{max-width:1180px;margin:0 auto;padding:10px 20px;display:flex;gap:16px;
+  align-items:center;justify-content:space-between;flex-wrap:wrap}
+.wb-entry .wb-text{font-size:13.5px;color:#1e40af;line-height:1.55;flex:1;min-width:260px}
+.wb-entry .wb-text strong{color:#1e3a8a}
+.wb-entry .wb-more{color:#3b6ea5}
+.wb-entry .wb-acts{display:flex;gap:8px;flex-wrap:wrap}
+.wb-btn{display:inline-block;padding:7px 14px;border-radius:8px;border:1px solid #bfdbfe;
+  background:#fff;color:#1d4ed8;font-size:13px;font-weight:600;cursor:pointer;
+  text-decoration:none;white-space:nowrap;font-family:inherit}
+.wb-btn:hover{border-color:#93c5fd;background:#f8fbff}
+.wb-btn.primary{background:#2563eb;border-color:#2563eb;color:#fff}
+.wb-btn.primary:hover{background:#1d4ed8}
+@media(max-width:640px){
+  .wb-entry .inner{padding:9px 14px;gap:9px}
+  .wb-entry .wb-text{font-size:12.5px}
+  .wb-entry .wb-more{display:none}
+  .wb-btn{padding:6px 11px;font-size:12.5px}
+}
 *{box-sizing:border-box}
 body{margin:0;font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB","Source Han Sans SC",-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;font-size:14px}
 a{color:var(--accent)}
@@ -104,6 +124,20 @@ footer{max-width:1200px;margin:0 auto;padding:8px 20px 40px;font-size:12px;color
   <button data-tab="region">分地区明细</button>
   <button data-tab="sources">数据来源</button>
 </div></nav>
+
+<!-- 完整工作台入口（方案A：云站做轻量版，完整功能在本地程序端/云机） -->
+<div class="wb-entry">
+  <div class="inner">
+    <div class="wb-text">
+      <strong>本页是轻量版</strong>：查价格、快速组价、看系数，秒开即用。
+      <span class="wb-more">需要<b>清单导入 · 定额匹配 · 质量审计 · 导出成果</b>等完整功能，请用完整版工作台。</span>
+    </div>
+    <div class="wb-acts">
+      <a class="wb-btn primary" href="https://8770-agqyao6tz4h7eqx7y3steqodoa.instabox.tech" target="_blank" rel="noopener">打开完整工作台 ↗</a>
+      <button class="wb-btn" id="wbLocalHint">本地程序端怎么用</button>
+    </div>
+  </div>
+</div>
 
 <main>
 <!-- 概览 -->
@@ -630,6 +664,60 @@ renderCart();
   });
   document.getElementById('tb-sources').innerHTML = out || '<tr><td colspan="6" class="empty">无数据</td></tr>';
 })();
+/* ---- 完整工作台：本地程序端说明弹窗 ---- */
+(function(){
+  var b = document.getElementById('wbLocalHint');
+  if(!b) return;
+  b.addEventListener('click', function(){
+    var old = document.getElementById('wbModal');
+    if(old) old.remove();
+    var d = document.createElement('div');
+    d.id = 'wbModal';
+    d.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:9999;'
+      + 'display:flex;align-items:center;justify-content:center;padding:18px';
+    d.innerHTML =
+      '<div style="background:#fff;border-radius:14px;max-width:660px;width:100%;'
+      + 'max-height:86vh;overflow:auto;padding:22px 24px;box-shadow:0 20px 60px rgba(0,0,0,.25)">'
+      + '<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:6px">'
+      + '<h3 style="margin:0;font-size:18px;color:#1f2937;flex:1">本地程序端怎么用</h3>'
+      + '<button id="wbModalX" style="border:0;background:#f3f4f6;width:30px;height:30px;'
+      + 'border-radius:8px;cursor:pointer;font-size:16px;color:#6b7280">×</button></div>'
+      + '<p style="font-size:13.5px;color:#4b5563;line-height:1.7;margin:10px 0 14px">'
+      + '完整版工作台是<b>装在自己电脑上的程序</b>，不用上传任何数据到网上，也不受网络速度影响。'
+      + '双击启动后就是一个独立窗口，关窗即退出。</p>'
+      + '<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;'
+      + 'padding:12px 14px;font-size:13px;color:#1e40af;line-height:1.75;margin-bottom:14px">'
+      + '<b>完整版比本页多什么</b><br>'
+      + '· 招标清单导入（Excel，自动识别表头）<br>'
+      + '· 定额匹配（求实 N10 吉林安装 2024，18,266 条）<br>'
+      + '· 单位换算、取费费率、质量审计（六类问题）<br>'
+      + '· 主材询价与价格库、施工成本价、劳务分包价<br>'
+      + '· 造价指标、导出一览表与报告<br>'
+      + '· 本页这套安装费数据（含 6507 行明细）也已在完整版里，可离线查'
+      + '</div>'
+      + '<div style="font-size:13px;color:#374151;line-height:1.9">'
+      + '<b>三种用法</b><br>'
+      + '① <b>本机程序端</b>（推荐）：装在自己电脑，功能最全，数据存本地<br>'
+      + '② <b>云机网页版</b>：手机/外网直接打开，'
+      + '<a href="https://8770-agqyao6tz4h7eqx7y3steqodoa.instabox.tech" target="_blank" '
+      + 'rel="noopener" style="color:#2563eb">点这里</a>（注意云机是另一套数据库）<br>'
+      + '③ 本页（轻量版）：只查价格与快速组价，不需登录、秒开'
+      + '</div>'
+      + '<div style="margin-top:16px;padding-top:14px;border-top:1px solid #e5e7eb;'
+      + 'font-size:12.5px;color:#6b7280;line-height:1.7">'
+      + '两个版本口径一致：<b>安装费 = 人工 + 辅材 + 机械，不含主材</b>；'
+      + '当地价 = 全国基准 × 地区修正系数。完整版另外还带定额口径组价，两套口径分开算、不混用。</div>'
+      + '</div>';
+    document.body.appendChild(d);
+    function close(){ d.remove(); }
+    document.getElementById('wbModalX').onclick = close;
+    d.addEventListener('click', function(e){ if(e.target === d) close(); });
+    document.addEventListener('keydown', function esc1(e){
+      if(e.key === 'Escape'){ close(); document.removeEventListener('keydown', esc1); }
+    });
+  });
+})();
+
 </script>
 </body>
 </html>
